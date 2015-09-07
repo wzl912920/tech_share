@@ -1,4 +1,4 @@
 # tech_share
 Some tech share
 
-[Hello](share_plan.md)
+[分享计划](share_plan.md)
