@@ -4,9 +4,9 @@
 
 * java.lang.Class
 * java.lang.reflect.Constructor
-* java.lang.Field
-* java.lang.Method
-* java.lang.Modifier
+* java.lang.reflect.Field
+* java.lang.reflect.Method
+* java.lang.reflect.Modifier
 
 ## 获取 Class 对象
 
