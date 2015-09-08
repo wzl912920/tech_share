@@ -59,7 +59,61 @@
       private TextView mDoctorAge;
       
       public void onCreate(Bundle saveInstanceState){
-          BufferKnife.inject(this,contentView);
+          BufferKnife.inject(this);
       }
-    
+        
     }
+    
+这里干了这么几件事：
+1. 定义属性，并且添加了注解
+2. 在 onCreate 方法里调用 BufferKnife.inject() 方法
+    
+然后 @InjectView 大概是这样子的：
+
+    @Target(ElementType.FIELD)
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface HDFInjectView {
+        int value();
+    }
+
+这个注解大概表达了以下几个意思：
+1. 这个注解的作用域是变量
+2. 这个注解的级别是运行时
+
+然后 BufferKnife.inject() 大概是这样子的：
+
+    public static void inject(Activity activity){
+        Class clazz = activity.getClass();
+        Log.i(TAG,"class = " + clazz);
+        Field[] fields = clazz.getDeclaredFields();
+        Log.i(TAG, "Fields is = " + fields);
+        for(Field field : fields){
+            HDFInjectView inject = field.getAnnotation(HDFInjectView.class);
+            Log.i(TAG,"inject = " + inject + " field = " + field);
+            if(inject != null){
+                int id = inject.value();
+                View view = activity.findViewById(id);
+                Log.i(TAG,"view = " + view);
+                try {
+                    field.setAccessible(true);
+                    field.set(activity,view);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    
+主要的步骤是这样的：
+
+1. 获得该 Activity 的 class 对象
+2. 获得该 Activity 定义的所有变量，也就是 Field
+3. 遍历所有 Field
+4. 获得声明了 HDFInjectView 注解的 Field，也就是咱们定义的各种 View
+5. 获得该 Field 的注解的值，也就是在 View 的注解上声明的 id
+6. 通过 Activity.findViewById() 的方法，获得已经加载到内存的 View
+7. 给 Field 赋值
+
+所有这些等于：
+
+    mDoctorAge = (TextView)findViewById(R.id.doctor_age);
