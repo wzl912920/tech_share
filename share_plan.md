@@ -6,6 +6,9 @@
 * Android 相册Demo 技术点知识分享（小旭）
 * Android MediaPlayer and Service (卫超) [传送门](articles/Android_MediaPlayer.md)
 * Java 反射，泛型，注解（黄斌）
+  * Java 反射
+  * 泛型  [传送门](articles/Java_GenericType.md)
+  * 注解
 * 
 
 ## 未开始的任务
