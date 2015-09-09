@@ -193,3 +193,6 @@
     AnimatedVectorDrawable mAnimatedVectorDrawable =  (AnimatedVectorDrawable) getResources().getDrawable(R.drawable.heart_vector_animator);
     mImageView.setImageDrawable(mAnimatedVectorDrawable);
     mAnimatedVectorDrawable.start();
+
+#友情链接
+[将SVG转成Android VectorDrawable XML资源文件](https://github.com/inloop/svg2android)
