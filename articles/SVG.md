@@ -1,3 +1,5 @@
+#学习前请点击下面链接
+[为何Google的新Logo只有305个字节？](http://www.tuicool.com/articles/rUNBjq#0-qzone-1-26437-d020d2d2a4e8d1a374a433f596ad1440)
 #什么是矢量图?
     矢量图使用直线和曲线来描述图形，这些图形的元素是一些点、线、矩形、多边形、圆和弧线等等，它们都是通过数学公式计算获得的。
 #什么是SVG?
@@ -196,3 +198,7 @@
 
 #友情链接
 [将SVG转成Android VectorDrawable XML资源文件](https://github.com/inloop/svg2android)
+
+[SVG元素和代码解释](http://wenku.baidu.com/link?url=uH5IhUr3HO4oOgYc9_tDMRMFoCdduT2EB_MCzToXXXdnFaOoXLbMZwlPmcqE223YfIyebnE5ghnZcwM334w0l6eDETGIWsYu_N7eHmTdzg3)
+
+[参考博客](http://blog.csdn.net/u010687392/article/details/48176727)
