@@ -195,6 +195,8 @@
     AnimatedVectorDrawable mAnimatedVectorDrawable =  (AnimatedVectorDrawable) getResources().getDrawable(R.drawable.heart_vector_animator);
     mImageView.setImageDrawable(mAnimatedVectorDrawable);
     mAnimatedVectorDrawable.start();
+#以上的缺点是只能运行在sdk版本21以上
+[第三方实现低版本识别svg](https://github.com/geftimov/android-pathview)
 
 #友情链接
 [将SVG转成Android VectorDrawable XML资源文件](https://github.com/inloop/svg2android)
