@@ -7,7 +7,7 @@
 * Android MediaPlayer and Service (卫超) [传送门](articles/Android_MediaPlayer.md)
 * Java 反射，泛型，注解（黄斌）
   * 泛型  [传送门](articles/Java_GenericType.md)
-* 
+* 设计模式(王安东)[传送门]()
 
 ## 已完成
 
