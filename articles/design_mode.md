@@ -168,6 +168,40 @@
                 femaleYellowHuman.sex();
             }
         }
+
 ###总结
 *   如果存在双性人，那么只要继承两个抽象类AbstractHumanFactory，AbstractYellowHuman，分别增加人和工厂就可以了
 *   高内聚，低耦合
+
+#单例模式
+
+*   类在内存中只能有一个对象
+*   外界不能够随意创建对象，把构造方法私有
+*   类本身要创建一个对象
+*   通过公共的方式提供给别人
+
+###饿汉式
+        class Single{
+        	private static final Single s = new Single();
+        	private Single(){}
+        	public static Single getInstance(){
+        		return s;
+        	}
+        }
+
+###懒汉式
+        class Single {
+        	private static Single s = null;
+        	private Single(){}
+        	public static  Single getInstance(){
+        		if(s==null){
+        			synchronized(Single.class){
+        				if(s==null)
+        					s = new Single();
+        			}
+        		}
+        		return s;
+        	}
+        }
+
+#适配器模式
