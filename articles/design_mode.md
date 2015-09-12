@@ -327,3 +327,72 @@
                 return userName;
             }
         }
+
+总结：更倾向于是一种解决问题的思路    
+#装饰器模式
+对类原有的功能进行了修饰或者扩充。
+        定义手机接口
+        public interface Phone {
+        	public abstract void call();
+        }
+        
+        定义接口实现类
+        public class PhoneImpl implements Phone {
+        	@Override
+        	public void call() {
+        		System.out.println("用手机打电话");
+        	}
+        }
+        
+        定义抽象包装类
+        public abstract class PhoneDecorate implements Phone {
+        	private Phone phone;
+        	public PhoneDecorate(Phone phone) {
+        		this.phone = phone;
+        	}
+        	@Override
+        	public void call() {
+        		this.phone.call();
+        	}
+        }
+        
+        定义打电话之前播放彩铃的类
+        public class ColorPhoneDecorate extends PhoneDecorate {
+        	public ColorPhoneDecorate(Phone phone) {
+        		super(phone);
+        	}
+        	@Override
+        	public void call() {
+        		System.out.println("播放彩铃");
+        		super.call();
+        	}
+        }
+        
+        定义打电话之后播放一个广告
+        public class GuangGaoPhoneDecorate extends PhoneDecorate {
+        	public GuangGaoPhoneDecorate(Phone phone) {
+        		super(phone);
+        	}
+        	@Override
+        	public void call() {
+        		super.call();
+        		System.out.println("播放广告");
+        	}
+        }
+        
+        使用案例
+        public class PhoneTest {
+        	public static void main(String[] args) {
+        		Phone p = new PhoneImpl();
+        		p.call();
+        
+        		PhoneDecorate pd = new ColorPhoneDecorate(p);
+        		pd.call();
+        
+        		pd = new GuangGaoPhoneDecorate(p);
+        		pd.call();
+        
+        		pd = new GuangGaoPhoneDecorate(new ColorPhoneDecorate(p));
+        		pd.call();
+        	}
+        }
