@@ -205,3 +205,124 @@
         }
 
 #适配器模式
+笔记本电源线上的黑盒子就是个适配器，一般你在中国能用，在日本也能用，虽然两个国家的的电源电压不同，中国是 220V，日本是110V，但是这个适配器能够把这些不同的电压转换为你需要的 36V 电压，保证你的笔记本能够正常运行
+        公司内部员工用户信息对象
+        public interface IUserInfo {
+            //获得用户姓名
+            public String getUserName();
+            //获得家庭地址
+            public String getHomeAddress();
+            //手机号码
+            public String getMobileNumber();
+            //办公电话，一般式座机
+            public String getOfficeTelNumber();
+            //这个人的职位是啥
+            public String getJobPosition();
+            //获得家庭电话
+            public String getHomeTelNumber();
+        }
+        
+        接口的实现类
+        public class UserInfo implements IUserInfo {
+            public String getHomeAddress() {
+                System.out.println("这里是员工的家庭地址....");
+                return null;
+            }
+            public String getHomeTelNumber() {
+                System.out.println("员工的家庭电话是....");
+                return null;
+            }
+            public String getJobPosition() {
+                System.out.println("这个人的职位是BOSS....");
+                return null;
+            }
+            public String getMobileNumber() {
+                System.out.println("这个人的手机号码是0000....");
+                return null;
+            }
+            public String getOfficeTelNumber() {
+                System.out.println("办公室电话是....");
+                return null;
+            }
+            public String getUserName() {
+                System.out.println("姓名叫做...");
+                return null;
+            }
+        }
+        
+        使用
+        public class App {
+            public static void main(String[] args) {
+                IUserInfo youngGirl = new UserInfo();
+                //调用方法即可
+                ......(自己的代码)
+            }
+        }
+        
+        公司外部员工信息
+        public interface IOuterUser {
+            //基本信息，比如名称，性别，手机号码了等
+            public Map getUserBaseInfo();
+            //工作区域信息
+            public Map getUserOfficeInfo();
+            //用户的家庭信息
+            public Map getUserHomeInfo();
+        }
+        实现类
+        public class OuterUser implements IOuterUser {
+            public Map getUserBaseInfo() {
+                HashMap baseInfoMap = new HashMap();
+                baseInfoMap.put("userName", "这个员工叫混世魔王....");
+                baseInfoMap.put("mobileNumber", "这个员工电话是....");
+                return baseInfoMap;
+            }
+            public Map getUserHomeInfo() {
+                HashMap homeInfo = new HashMap();
+                homeInfo.put("homeTelNumbner", "员工的家庭电话是....");
+                homeInfo.put("homeAddress", "员工的家庭地址是....");
+                return homeInfo;
+            }
+            public Map getUserOfficeInfo() {
+                HashMap officeInfo = new HashMap();
+                officeInfo.put("jobPosition","这个人的职位是BOSS...");
+                officeInfo.put("officeTelNumber", "员工的办公电话是....");
+                return officeInfo;
+            }
+        }
+        
+        将外部员工信息导入公司内部
+        public class OuterUserInfo extends OuterUser implements IUserInfo {
+            private Map baseInfo = super.getUserBaseInfo(); //员工的基本信息
+            private Map homeInfo = super.getUserHomeInfo(); //员工的家庭 信息
+            private Map officeInfo = super.getUserOfficeInfo(); //工作信息
+            public String getHomeAddress() {
+                String homeAddress = (String)this.homeInfo.get("homeAddress");
+                System.out.println(homeAddress);
+                return homeAddress;
+            }
+            public String getHomeTelNumber() {
+                String homeTelNumber = (String)this.homeInfo.get("homeTelNumber");
+                System.out.println(homeTelNumber);
+                return homeTelNumber;
+            }
+            public String getJobPosition() {
+                String jobPosition = (String)this.officeInfo.get("jobPosition");
+                System.out.println(jobPosition);
+                return jobPosition;
+            }
+            public String getMobileNumber() {
+                String mobileNumber = (String)this.baseInfo.get("mobileNumber");
+                System.out.println(mobileNumber);
+                return mobileNumber;
+            }
+            public String getOfficeTelNumber() {
+                String officeTelNumber = (String)this.officeInfo.get("officeTelNumber");
+                System.out.println(officeTelNumber);
+                return officeTelNumber;
+            }
+            public String getUserName() {
+                String userName = (String)this.baseInfo.get("userName");
+                System.out.println(userName);
+                return userName;
+            }
+        }
