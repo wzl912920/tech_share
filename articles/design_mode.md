@@ -331,6 +331,7 @@
 总结：更倾向于是一种解决问题的思路    
 #装饰器模式
 对类原有的功能进行了修饰或者扩充。
+
         定义手机接口
         public interface Phone {
         	public abstract void call();
@@ -396,3 +397,5 @@
         		pd.call();
         	}
         }
+
+#代理模式
