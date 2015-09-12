@@ -424,3 +424,206 @@
         	}
         }
 
+#建造者模式
+根据不同需求制造出不同的产品
+例子是制造不同的车辆模型：汽车的启动、停止、喇叭声音、引擎声音都有客户自己控制，他想什么顺序就什么顺序
+
+        模型抽象基类
+        public abstract class CarModel {
+            //这个参数是各个基本方法执行的顺序
+            private ArrayList<String> sequence = new ArrayList<String>();
+            //启动
+            protected abstract void start();
+            //停止
+            protected abstract void stop();
+            //喇叭
+            protected abstract void alarm();
+            //引擎
+            protected abstract void engineBoom();
+            //行驶汽车
+            final public void run() {
+                //循环一遍，谁在前，就先执行谁
+                for(int i=0;i<this.sequence.size();i++){
+                    String actionName = this.sequence.get(i);
+                    if(actionName.equalsIgnoreCase("start")){ //如果是start关键字，
+                        this.start(); //开启汽车
+                    }else if(actionName.equalsIgnoreCase("stop")){ //如果是stop关键字
+                        this.stop(); //停止汽车
+                    }else if(actionName.equalsIgnoreCase("alarm")){ //如果是alarm关键字
+                        this.alarm(); //喇叭开始叫了
+                    }else if(actionName.equalsIgnoreCase("engine boom")){ //如果是engine
+                        this.engineBoom(); //引擎开始轰鸣
+                        }
+                }
+            }
+            //把传递过来的值传递到类内
+            final public void setSequence(ArrayList<String> sequence){
+                this.sequence = sequence;
+            }
+        }
+        
+        奔驰模型
+        public class BenzModel extends CarModel {
+            @Override
+            protected void alarm() {
+                System.out.println("奔驰车的喇叭声音是这个样子的...");
+            }
+            @Override
+            protected void engineBoom() {
+                System.out.println("奔驰车的引擎是这个声音的...");
+            }
+            @Override
+            protected void start() {
+                System.out.println("奔驰车跑起来是这个样子的...");
+            }
+            @Override
+            protected void stop() {
+                System.out.println("奔驰车应该这样停车...");
+            }
+        }
+        
+        宝马模型
+        public class BMWModel extends CarModel {
+            @Override
+            protected void alarm() {
+                System.out.println("宝马车的喇叭声音是这个样子的...");
+            }
+            @Override
+            protected void engineBoom() {
+                System.out.println("宝马车的引擎是这个声音的...");
+            }
+            @Override
+            protected void start() {
+                System.out.println("宝马车跑起来是这个样子的...");
+            }
+            @Override
+            protected void stop() {
+                System.out.println("宝马车应该这样停车...");
+            }
+        }
+        
+        使用
+        public class Client {
+            public static void main(String[] args) {
+                BenzModel benz = new BenzModel();
+                ArrayList<String> sequence = new ArrayList<String>(); //存放run的顺序
+                sequence.add("engine boom"); //客户要求，run的时候时候先发动引擎
+                sequence.add("start"); //启动起来
+                sequence.add("stop"); //开了一段就停下来
+                //然后我们把这个顺序给奔驰车：
+                benz.setSequence(sequence);
+                benz.run();
+            }
+        }
+        
+        改进
+        public abstract class CarBuilder {
+            //建造一个模型，你要给我一个顺序要，就是组装顺序
+            public abstract void setSequence(ArrayList<String> sequence);
+            //设置完毕顺序后，就可以直接拿到这个车辆模型
+            public abstract CarModel getCarModel();
+        }
+        
+        奔驰模型
+        public class BenzBuilder extends CarBuilder {
+            private BenzModel benz = new BenzModel();
+            @Override
+            public CarModel getCarModel() {
+                return this.benz;
+            }
+            @Override
+            public void setSequence(ArrayList<String> sequence) {
+                this.benz.setSequence(sequence);
+            }
+        }
+        
+        宝马模型
+        public class BMWBuilder extends CarBuilder {
+            private BMWModel bmw = new BMWModel();
+            @Override
+            public CarModel getCarModel() {
+                return this.bmw;
+            }
+            @Override
+            public void setSequence(ArrayList<String> sequence) {
+                this.bmw.setSequence(sequence);
+            }
+        }
+        
+        使用
+        public class Client {
+            public static void main(String[] args) {
+                ArrayList<String> sequence = new ArrayList<String>(); //存放run的顺序
+                sequence.add("engine boom"); //客户要求，run的时候时候先发动引擎
+                sequence.add("start"); //启动起来
+                sequence.add("stop"); //开了一段就停下来
+                //要一个奔驰车：
+                BenzBuilder benzBuilder = new BenzBuilder();
+                benzBuilder.setSequence(sequence);
+                BenzModel benz = (BenzModel)benzBuilder.getCarModel();
+                benz.run();
+                
+                //按照同样的顺序，我再要一个宝马
+                BMWBuilder bmwBuilder = new BMWBuilder();
+                bmwBuilder.setSequence(sequence);
+                BMWModel bmw = (BMWModel)bmwBuilder.getCarModel();
+                bmw.run();
+            }
+        }
+        
+        封装改进
+        public class Director {
+            private ArrayList<String> sequence = new ArrayList();
+            private BenzBuilder benzBuilder = new BenzBuilder();
+            private BMWBuilder bmwBuilder = new BMWBuilder();
+            //A类型的奔驰车模型，先start,然后stop,其他什么引擎了，喇叭一概没有
+            public BenzModel getABenzModel(){
+                this.sequence.clear();
+                this.sequence.add("start");
+                this.sequence.add("stop");
+                this.benzBuilder.setSequence(this.sequence);
+                return (BenzModel)this.benzBuilder.getCarModel();
+            }
+            //B型号的奔驰车模型，是先发动引擎，然后启动，然后停止，没有喇叭
+            public BenzModel getBBenzModel(){
+                this.sequence.clear();
+                this.sequence.add("engine boom");
+                this.sequence.add("start");
+                this.sequence.add("stop");
+                this.benzBuilder.setSequence(this.sequence);
+                return (BenzModel)this.benzBuilder.getCarModel();
+            }
+            //C型号的宝马车是先按下喇叭（炫耀嘛），然后启动，然后停止
+            public BMWModel getCBMWModel(){
+                this.sequence.clear();
+                this.sequence.add("alarm");
+                this.sequence.add("start");
+                this.sequence.add("stop");
+                this.bmwBuilder.setSequence(this.sequence);
+                return (BMWModel)this.bmwBuilder.getCarModel();
+            }
+            //D类型的宝马车只有一个功能，就是跑，启动起来就跑，永远不停止，牛叉
+            public BMWModel getDBMWModel(){
+                this.sequence.clear();
+                this.sequence.add("start");
+                this.bmwBuilder.setSequence(this.sequence);
+                return (BMWModel)this.benzBuilder.getCarModel();
+            }
+        }
+        public class Client {
+            public static void main(String[] args) {
+                Director director = new Director();
+                //1W辆A类型的奔驰车
+                for(int i=0;i<10000;i++){
+                    director.getABenzModel().run();
+                }
+                //100W辆B类型的奔驰车
+                for(int i=0;i<1000000;i++){
+                    director.getBBenzModel().run();
+                }
+                //1000W量C类型的宝马车
+                for(int i=0;i<10000000;i++){
+                    director.getCBMWModel().run();
+                }
+            }
+        }
