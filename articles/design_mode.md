@@ -627,3 +627,160 @@
                 }
             }
         }
+
+#原型模式
+以发送邮件广告为例说明
+
+        广告信模板
+        public class AdvTemplate {
+            //广告信名称
+            private String advSubject ="XX银行国庆信用卡抽奖活动";
+            //广告信内容
+            private String advContext = "国庆抽奖活动通知：只要刷卡就送你1百万！....";
+            //取得广告信的名称
+            public String getAdvSubject(){
+                return this.advSubject;
+            }
+            //取得广告信的内容
+            public String getAdvContext(){
+                return this.advContext;
+            }
+        }
+        
+        邮件类
+        public class Mail {
+            //构造函数
+            public Mail(AdvTemplate advTemplate){
+                this.contxt = advTemplate.getAdvContext();
+                this.subject = advTemplate.getAdvSubject();
+            }
+            //收件人
+            private String receiver;
+            //邮件名称
+            private String subject;
+            //称谓
+            private String appellation;
+            //邮件内容
+            private String contxt;
+            //邮件的尾部，一般都是加上“XXX版权所有”等信息
+            private String tail;
+            //以下为getter/setter方法
+            public String getReceiver() {
+                return receiver;
+            }
+            public void setReceiver(String receiver) {
+                this.receiver = receiver;
+            }
+            public String getSubject() {
+                return subject;
+            }
+            public void setSubject(String subject) {
+                this.subject = subject;
+            }
+            public String getAppellation() {
+                return appellation;
+            }
+            public void setAppellation(String appellation) {
+                this.appellation = appellation;
+            }
+            public String getContxt() {
+                return contxt;
+            }
+            public void setContxt(String contxt) {
+                this.contxt = contxt;
+            }
+            public String getTail() {
+                return tail;
+            }
+            public void setTail(String tail) {
+                this.tail = tail;
+            }
+        }
+        
+        发送邮件
+        public class Client {
+            //发送账单的数量，这个值是从数据库中获得
+            private static int MAX_COUNT = 6;
+            public static void main(String[] args) {
+            //模拟发送邮件
+            int i=0;
+            //把模板定义出来，这个是从数据库中获得
+            Mail mail = new Mail(new AdvTemplate());
+            mail.setTail("XX银行版权所有");
+            while(i<MAX_COUNT){
+                //以下是每封邮件不同的地方
+                mail.setAppellation(getRandString(5)+" 先生（女士）");
+                mail.setReceiver(getRandString(5) + "@" + getRandString(8)+".com");
+                //然后发送邮件
+                sendMail(mail);
+                i++;
+            }
+            }
+            //发送邮件（模拟使用）
+            public static void sendMail(Mail mail){
+                System.out.println("标题："+mail.getSubject() + "\t收件人："+mail.getReceiver()+"\t....发送成功！");
+            }
+            //获得指定长度的随机字符串（模拟使用）
+            public static String getRandString(int maxLength){
+                String source ="abcdefghijklmnopqrskuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                StringBuffer sb = new StringBuffer();
+                Random rand = new Random();
+                for(int i=0;i<maxLength;i++){
+                    sb.append(source.charAt(rand.nextInt(source.length())));
+                }
+                return sb.toString();
+            }
+        }
+        
+        运行结果如下：
+        标题：XX银行国庆信用卡抽奖活动  收件人：fjQUm@ZnkyPSsL.com  ....发送成功！
+        标题：XX银行国庆信用卡抽奖活动  收件人：ZIKnC@NOKdloNM.com  ....发送成功！
+        标题：XX银行国庆信用卡抽奖活动  收件人：zNkMI@HpMMSZaz.com  ....发送成功！
+        标题：XX银行国庆信用卡抽奖活动  收件人：oMTFA@uBwkRjxa.com  ....发送成功！
+        标题：XX银行国庆信用卡抽奖活动  收件人：TquWT@TLLVNFja.com  ....发送成功！
+        标题：XX银行国庆信用卡抽奖活动  收件人：rkQbp@mfATHDQH.com  ....发送成功！
+        
+        思考：目前是单线程发送6条，如果是600W条？启用多线程，那么必然存在线程安全问题？
+              这次使用原型模式解决。
+        
+        解决方案：
+        邮件类实现Cloneable接口，复写clone方法
+        public class Mail implements Cloneable{ 
+            ......(之前的代码)
+            @Override
+            public Mail clone(){
+                Mail mail =null;
+                try {
+                    mail = (Mail)super.clone();
+                } catch (CloneNotSupportedException e) {
+                    e.printStackTrace();
+                }
+            }
+            ......(之前的代码)
+        }
+        
+        使用类
+        public class Client {
+            //发送账单的数量，这个值是从数据库中获得
+            private static int MAX_COUNT = 6;
+            public static void main(String[] args) {
+                //模拟发送邮件
+                int i=0;
+                //把模板定义出来，这个是从数据中获得
+                Mail mail = new Mail(new AdvTemplate());
+                mail.setTail("XX银行版权所有");
+                while(i<MAX_COUNT){
+                    //以下是每封邮件不同的地方
+                    Mail cloneMail = mail.clone();
+                    
+                    cloneMail.setAppellation(getRandString(5)+" 先生（女士）");
+                    cloneMail.setReceiver(getRandString(5) + "@" +getRandString(8)+".com");
+                    //然后发送邮件
+                    sendMail(cloneMail);
+                    i++;
+                }
+            }
+            ......(之前的代码)
+        }
+        
+        总结：sendMail 即使是多线程也没有关系，不会存在多个引用修改一个数据的情况
