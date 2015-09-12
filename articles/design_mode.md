@@ -328,7 +328,33 @@
             }
         }
 
-总结：更倾向于是一种解决问题的思路    
+总结：更倾向于是一种解决问题的思路
+
+#代理模式
+什么是代理模式呢？我很忙，忙的没空理你，那你要找我呢就先找我的代理人吧，那代理人总要知道被代理人能做哪些事情不能做哪些事情吧，那就是两个人具备同一个接口，代理人虽然不能干活，但是被代理的人能干活呀
+
+        定义顶层接口
+        public interface People {
+        	public abstract void usePhone();
+        }
+        public class Me implements People{
+            public void usePhone(){
+                System.out.println("用手机打电话");
+            }
+        }
+        public class Proxy implements People{
+            private People people;
+            public WangPo(){ //默认的话，是我的代理
+                this.people = new Me();
+            }
+            public WangPo(People people){//也可以是别人的代理
+                this.people = people;
+            }
+            public void usePhone(){
+                this.people.usePhone;
+            }
+        }
+
 #装饰器模式
 对类原有的功能进行了修饰或者扩充。
 
@@ -398,4 +424,3 @@
         	}
         }
 
-#代理模式
