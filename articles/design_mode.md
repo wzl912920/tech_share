@@ -344,10 +344,10 @@
         }
         public class Proxy implements People{
             private People people;
-            public WangPo(){ //默认的话，是我的代理
+            public Proxy(){ //默认的话，是我的代理
                 this.people = new Me();
             }
-            public WangPo(People people){//也可以是别人的代理
+            public Proxy(People people){//也可以是别人的代理
                 this.people = people;
             }
             public void usePhone(){
